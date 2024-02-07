@@ -15,7 +15,7 @@
   ],
   "devDependencies": {},
   "scripts": {
-    "getaudiodevices": "node node_modules/izy-proxy/cli.js callpretty audio/io?getaudiodevices",
+    "getaudiodevices": "node node_modules/izy-proxy/cli.js callpretty audio/io?getaudiodevices"
   },
   "author": "Izyware Inc",
   "license": "MIT"
