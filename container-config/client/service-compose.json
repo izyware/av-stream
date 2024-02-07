@@ -1,0 +1,67 @@
+{
+	"verbose" : {
+		"forceUpToLevel": 2,
+		"extraInfoInLogs": true,
+		"useANSIColors": true,
+		"filter_": {
+			"_services_": ["hub", "xxxxmixeradminclient"],
+			"_invokeStrings": ["mouseclick", "mixeradmin/xcast?onConnectionState"],
+			"_devices": ["spk-wrp"],
+			"_actions": ["processClientCommand"]
+		},
+		"fieldsSchema": {
+			"timestamp": true,
+			"service": { "len": 20, "prefix": "[", "postfix": "]" }, 
+			"context": { "len": 6, "prefix": "{", "postfix": "}" }, 
+			"invokeString": { "len": -40, "prefix": "(", "postfix": ")" }, 
+			"action": { "len": 20 }, 
+			"device": { "len": 10 }, 
+			"outcome": true,
+			"misc": true
+		},
+		"analyzer": false,
+		"audio": false,
+		"audioinput": false,
+		"audioInputSample": false,
+		"audioNodeConnect": false,
+		"audioNotification": false,
+		"audioStreamBetweenNodes": false,
+		"audioStreamBetweenNodesLogAllStreamData": false,
+		"__audioStreamBetweenNodesGrepStr": "b-ai",
+		"broadcasting" : false,
+		"ffmpeg": false,
+		"jsonio": false,
+		"kinesis": false,
+		"kinesisScreenCapture": false,
+		"kinesisLogginIntervalSeconds": 2,
+		"mixerMetadata": false,
+		"networking": false,
+		"processcmds": true,
+		"portforwarding": false,
+		"QOSMetrics": false,
+		"service": false,
+		"shell": false,
+		"stages": false,
+		"streamProtocol": false,
+		"streamProtocolActions": false,
+		"taskoutcome": false
+	},
+	"user": {
+		"id": "client"
+	},
+	"workstationaudioout": {
+		"address": "apple-av-stream:10002",
+		"type": "audioinput",
+		"name": "ws-ai",
+		"mode_not3": "useAudioCopy",
+		"mode_not": "streamWaveLoop",
+		"mode": "IzyAudioInputNode",
+		"sampleRate": 44100,
+		"dataStreamType": "16BitPCM",
+		"deviceNameGrepStr": "Blackhole",
+		"crashAfterTimeSeconds": 60,
+		"isSilentWhenPowerIsBelow": 0.009,
+		"stopStreamingWhenSilent": true
+	}
+}
+
