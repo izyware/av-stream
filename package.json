@@ -1,0 +1,23 @@
+{
+  "name": "av-stream",
+  "version": "7.0.00",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/izyware/av-stream"
+  },
+  "dependencies": {
+    "izy-proxy": "latest",
+    "naudiodon": "^2.3.4",
+    "websocket": "^1.0.34"
+  },
+  "files": [
+    "README.md"
+  ],
+  "devDependencies": {},
+  "scripts": {
+    "getaudiodevices": "node node_modules/izy-proxy/cli.js callpretty audio/io?getaudiodevices",
+  },
+  "author": "Izyware Inc",
+  "license": "MIT"
+}
+
