@@ -58,7 +58,7 @@
 		"mode": "IzyAudioInputNode",
 		"sampleRate": 44100,
 		"dataStreamType": "16BitPCM",
-		"deviceNameGrepStr": "Blackhole",
+		"deviceNameGrepStr": "Plantronics",
 		"crashAfterTimeSeconds": 60,
 		"isSilentWhenPowerIsBelow": 0.009,
 		"stopStreamingWhenSilent": true
