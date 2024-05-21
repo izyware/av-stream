@@ -28,7 +28,8 @@ module.exports = function() {
       streamProtocol: 'streamproto1',
       // dataStreamType: '16BitPCM', // composeConfig.dataStreamType
       isSilentWhenPowerIsBelow: composeConfig.isSilentWhenPowerIsBelow,
-      stopStreamingWhenSilent: composeConfig.stopStreamingWhenSilent
+      stopStreamingWhenSilent: composeConfig.stopStreamingWhenSilent,
+      downsampleRatio: composeConfig.downsampleRatio
     });
     socketWriterNode.getMetaDataStrFunction = () => '__nothing__'
     socketWriterNode.setName('socketWriter');
