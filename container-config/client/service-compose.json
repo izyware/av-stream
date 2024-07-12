@@ -62,5 +62,12 @@
 		"crashAfterTimeSeconds": 60,
 		"isSilentWhenPowerIsBelow": 0.009,
 		"stopStreamingWhenSilent": true
+	},
+	"kinesis@workstation": {
+		"pkgModuleString": "service/kinesis/workstation",
+		"url": "http://HOST:PORTFORWARDSERVICE/p5/jsonio",
+		"metadataVarName": "lastInput",
+		"cmd": "izy.auto 'session?new' queryObject.workflow WORK_FLOW;ls -l;echo test;",
+		"thresholdSeconds": 210
 	}
 }
