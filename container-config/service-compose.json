@@ -62,6 +62,25 @@
 		"crashAfterTimeSeconds": 60,
 		"isSilentWhenPowerIsBelow": 0.009,
 		"stopStreamingWhenSilent": true
+	},
+	"workstationaudioinpeer": {
+		"pkgModuleString": "service/audiooutput/peer",
+		"address": "apple-av-stream:10002",
+		"mode": "IzySpeakerNode",
+		"name": "ao-ws",
+		"deviceNameGrepStr" : "BlackHole2",
+		"isSilentWhenPowerIsBelow": 0.009,
+		"stopStreamingWhenSilent": true,
+		"beepAndPauseOnAudioInit": {
+			"volume": 0.05,
+			"timeInMilliseconds": 3000,
+			"frequencyInHZ": 200
+		},
+		"ffmpegFilterNode_disabled": {
+			"outputDirectlyViaFFPlay": false,
+			"runCmdBeforeStart": "amixer -c 3 sset PCM 59%",
+			"filterCmd": "cmd"
+		}
 	}
 }
 

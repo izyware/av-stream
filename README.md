@@ -132,6 +132,7 @@ Apply the changes
 # ChangeLog
 
 ## V7.4
+* 74000012: implement workstationaudioin
 * 74000011: implement self installer
 * 74000010: workstationaudioin - upgrade and implement silenceDetector
 * 74000009: datacaptureui - implement service
