@@ -6,34 +6,106 @@ To install the tools for global access to `izy.avstream` command, use:
     curl -o- https://raw.githubusercontent.com/izyware/av-stream/master/sh/install.sh | bash
 
 
-## Client Side Audio
-To pick a device for your service use the following. Make sure to "not" use the pulse devices as they tend to introduce delays and performance issue. Instead use the ALSA devices since they are faster.
 
+# Basic Setup    
+To pick a device (on all platforms) for your service use the following. 
     
     npm run getaudiodevices 
+
+
+
+# Routing audio across systems
+You need to "add" two audio devices, one source and one sink that can route (loopback) the audio output and input from and to the workstation. If you are using a host system, you can physically connect the host system's devices to the workstation and configure the services to use the host system's source and sink.
+
+If you are not using a host system, you would need to use virtual devices and software loopback. Below different workstation platforms are discussed.
+
+## MacOS
+Use [macos-blackhole], you can use homebrew to install 
+
+    brew install blackhole-2ch
+
+If you need to run multiple side by side blackhole drivers refer to: [Running-Multiple-BlackHole-Drivers].
+
+Always set your default system microphone and speaker to the virtual device. 
+
+## Linux
+Note that NaudioDon leverages ALSA (Advanced Linux Sound Architecture) for low-level audio input/output on Linux-based systems like Ubuntu which means that pulseAudio will not work with the node environment. On the other hand, most applications (Chrome, etc.) will, by default, try to communicate with PulseAudio to handle audio streams (e.g., media playback in the browser, sound notifications, etc.). You can verify whether your app uses ALSA by doing:
+
+    sudo lsof /dev/snd/*
+
+To manage the lifecycle of the virtual devices use the following commands (Notice that the ALSA virtual device would use `hw:device X,0` for the sink and `hw:device X,1` for the source):
+
+    /* setup the sampleRate both for alsa and pulseaudio */
+    sudo vim /etc/pulse/daemon.conf
     
+    /* add the following */
+    sudo vim /etc/modprobe.d/alsa-base.conf
+    options snd-aloop index=10,11 enable=1,1
+    
+    /* add snd-aloop to load at boot time */
+    sudo vim /etc/modules
+    
+    /* set the default sink and source (speaker and microphone) */
+    /etc/pulse/default.pa
+    
+Optionally, if you prefer to perform these task manually 
+    
+    /* load */
+    sudo modprobe snd-aloop
+    /* set sink and source manually */
+    pactl list short sinks
+    pactl set-default-sink 
+    /* To see the current defaults */
+    pactl info
+    /* unload */
+    sudo modprobe -r snd-aloop 
+    
+You can test the ALSA device
 
-## Loopback Devices
-To stream the device output, you would need a loopback device. Below are our recommendations:
+    /* test */
+    aplay -D plughw:3,1 ./data/test-44.1-16-mono.wav 
 
-* MacOS: [macos-blackhole], you can use homebrew to install 
+    
+The device will show up as "Built-in-Audio Stero" in Chrome as it is percieved by pulseAudio. 
 
-        brew install blackhole-2ch
+If you need to test that the virtual device sink is recieving audio from Chrome, you can use pulseAudio to route its source to the hardware sink (speaker) device:
 
-If you need to run multiple side by side blackhole drivers refer to: [Running-Multiple-BlackHole-Drivers]
+    pactl list short sources | grep monitor
+    pactl load-module module-loopback source=alsa_output.platform-snd_aloop.0.analog-stereo.monitor sink=alsa_output.usb-ASUSTeK_COMPUTER_INC._C-Media_R__Audio-00.analog-stereo
+    
+    pactl unload-module module-loopback
+  
 
-* Ubuntu: You should use ALSA as opposed to pulseAudio. pulseAudio will not work with the node environment. The loopback device will show up as "Built-in-Audio Stero" in Chrome. Notice that hw:SND_CARD_COUNT,0 for the output and hw:SND_CARD_COUNT,1 for the input.
+# Routing Video
 
-        /* setup the sampleRate both for alsa and pulseaudio */
-        sudo vim /etc/modprobe.d/alsa-base.conf
-        sudo vim /etc/pulse/daemon.conf
+## Using a virtual camera for the front-end
+It is recommended to use OBS studio virtual camera in conjuctions with an X server running on the machine. On MacOS, XQuarz may be used. 
+
+Steps to configure XQuartz:
+* Settings > Security: Enable "Allow connection from clients" and disable "Authenticate connections"
+* Xterm: run the following
         
-        /* load */
-        sudo modprobe snd-aloop 
-        /* test */
-        aplay -D plughw:3,1 ./data/test-44.1-16-mono.wav 
-        /* unload */
-        sudo modprobe -r snd-aloop 
+        service/virtualcamera/macos/xquartz.sh
+
+## Linux
+Use 
+    
+    chrome://media-internals/
+
+  
+# Misc Topics 
+      
+## Audio forwarding
+On ubuntu you may use
+        
+        sudo nano /etc/pulse/default.pa
+        load-module module-native-protocol-tcp
+        pulseaudio -k
+        pulseaudio --start  
+        export PULSE_SERVER=localhost
+        pactl info
+        
+
 
 ## Screenrecording for Kinesis Stream
 Make sure you have the correct ffmpeg version. 
@@ -131,7 +203,30 @@ Apply the changes
 
 # ChangeLog
 
+## V7.5
+* 75000012: update XQuartz setup instructions
+* 75000011: update keyboard command interface
+* 75000010: create setfastkeyboard script to allow for manual setup
+    * icewm may have another process overwriting keyboard settings post start up
+* 75000009: admin improve remotedesktop ui
+* 75000008: kinesis allow execInteractiveNonblocking for commands
+    * some command might fail when not running in interactive shell
+    * improve logging for command stdio
+* 75000007: componentize the virtualcamera stages and allow multi camera config sections
+    * improves flexibility for different icewm and workstation setups
+* 75000006: allow single string input for lib/shell 
+* 75000005: implement amplifierGain for IzyAudioInputNode and organize into nodeConfig
+* 75000004: update audioAggregator and support mixWorkstationAudio acceptOnlyOutputWorkstationAudio acceptOnlyInputWorkstationAudio modes
+* 75000003: prevent double starts on nonBrowserSpeakerNode
+    * on MacOS systems it would freeze the process 
+* 75000002: implement interactiveShell feature for lib/shell
+    * on Linux interactive shell might need to be explicitly specified
+* 75000001: implement apps/generic.js for converting shell commands into services
+    * use `pm2 start apps/generic.js --name service -- service` syntax
+    
 ## V7.4
+* 74000013: add debug/audio module for audioinput
+    * this will be removed and functionality integrated ino the webAudio library
 * 74000012: implement workstationaudioin
 * 74000011: implement self installer
 * 74000010: workstationaudioin - upgrade and implement silenceDetector
